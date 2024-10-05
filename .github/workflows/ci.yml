@@ -8,8 +8,6 @@ on:
         required: true
         default: 5  # Default value if no input is provided
         type: number
-      
-  push:
 jobs:
   job1:
     runs-on: self-hosted
