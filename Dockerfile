@@ -2,6 +2,7 @@
 FROM ubuntu:latest
 # Install required dependencies
 ARG name=firstone
+ARG token=placeholder
 RUN apt-get update && apt-get install -y \
     curl \
     jq \
@@ -26,7 +27,7 @@ ENV RUNNER_ALLOW_RUNASROOT="1"
 RUN ./bin/installdependencies.sh
 
 # Configure the runner with unattended mode
-RUN ./config.sh --url https://github.com/asif741852014/multirunners --token BLKP4O3YWCFCHNMCCKKDY4LHAE2JK --unattended --replace --name ${name}
+RUN ./config.sh --url https://github.com/asif741852014/multirunners --token ${token} --unattended --replace --name ${name}
 
 # Make sure the runner has execute permissions
 RUN chmod +x ./run.sh
