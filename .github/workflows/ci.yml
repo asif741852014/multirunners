@@ -1,6 +1,15 @@
 name: workflow1
 on:
   push:
+  workflow_dispatch:
+    inputs:
+      loop_count:
+        description: 'Number of times to run the loop'
+        required: true
+        default: 5  # Default value if no input is provided
+        type: number
+      
+  push:
 jobs:
   job1:
     runs-on: self-hosted
@@ -8,15 +17,18 @@ jobs:
     - name: step1
       uses: actions/checkout@v4
     - name: step2
-      run: ls -larth
-    - name: Fetch Runner Token
       run: |
-          echo "Fetching runner token..."
-          TOKEN=$(curl -X POST -H "Authorization: token ${{ secrets.PAT }}" \
+        echo "Fetching runner token..."
+        TOKEN=$(curl -X POST -H "Authorization: token ${{ secrets.PAT }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/${{ github.repository }}/actions/runners/registration-token | jq -r .token)
-          docker --version
-          docker build --build-arg name=one --build-arg token=$TOKEN -t myfirst1:v1.0 .
-          docker images
-          docker run -d --name myfirst1 myfirst1:v1.0
-          echo "the image got created and the container is running"
+        echo "token=$TOKEN" >> $GITHUB_ENV
+    - name: Fetch Runner Token
+      run: |
+          for i in $(seq 1 ${{ github.event.inputs.loop_count }}); do
+            docker --version
+            docker build --build-arg name=container$i --build-arg token=$token -t myfirst:$i .
+            docker images
+            docker run -d --name myfirst$i myfirst:$i
+            echo "the image got created and the container is running"
+          done
