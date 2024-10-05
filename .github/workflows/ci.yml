@@ -12,7 +12,7 @@ jobs:
     - name: step3
       run: |
         docker --version
-        docker build -t myfirst:v1.0 .
+        docker build -t myfirst1:v1.0 .
         docker images
-        docker run --name myfirst myfirst:v1.0
+        docker run -d --name myfirst1 myfirst:v1.0
         echo "the image got created and the container is running"
